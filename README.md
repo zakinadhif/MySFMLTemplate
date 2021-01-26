@@ -1,2 +1,2 @@
-# A Little Game Engine
-_Just a little game "engine"_
+# SFML Template
+_Just a little SFML project template I made._
