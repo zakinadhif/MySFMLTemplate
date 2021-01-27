@@ -7,12 +7,12 @@ GameState::GameState(GameStateManager& gameStateManager)
 	
 }
 
-void GameState::handleEvent(sf::Event event)
+void GameState::handleEvent([[maybe_unused]] sf::Event event)
 {
 
 }
 
-void GameState::update(const sf::Time& time)
+void GameState::update([[maybe_unused]] const sf::Time& time)
 {
 
 }
