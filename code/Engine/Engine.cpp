@@ -17,7 +17,7 @@ void Engine::routine()
 	sf::Clock timer;
 	sf::Time elapsed = sf::Time::Zero;
 
-	while (window.isOpen())
+	while (window.isOpen() && !game->shouldExit())
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
