@@ -10,7 +10,7 @@ public:
 	Game(
 	    sf::VideoMode mode,
 	    const std::string &title,
-	    std::int32_t style = sf::Style::Default,
+	    std::uint8_t style = sf::Style::Default,
 	    const sf::ContextSettings &settings = sf::ContextSettings()
 	);
 

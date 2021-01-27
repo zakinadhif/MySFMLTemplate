@@ -5,7 +5,7 @@
 Game::Game(
     sf::VideoMode mode,
     const std::string &title,
-    std::int32_t style,
+    std::uint8_t style,
     const sf::ContextSettings &settings
 )
 	: window(mode, title, style, settings)
