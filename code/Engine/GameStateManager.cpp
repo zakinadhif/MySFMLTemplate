@@ -23,6 +23,16 @@ const GameState& GameStateManager::peek() const
 	return *(states.top().get());
 }
 
+bool GameStateManager::isEmpty() const
+{
+	return states.empty();
+}
+
+std::size_t GameStateManager::getStatesCount() const
+{
+	return states.size();
+}
+
 void GameStateManager::pop()
 {
 	states.pop();
