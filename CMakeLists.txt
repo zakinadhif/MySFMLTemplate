@@ -7,12 +7,16 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS code/*.cpp)
 add_executable("${PROJECT_NAME}" ${SOURCES})
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-add_compile_options(-Wall -Wextra -pedantic -Werror -Og)
 
 set_target_properties(
 	"${PROJECT_NAME}"
 	PROPERTIES
 	CXX_STANDARD 17
+	)
+
+target_compile_options(
+	"${PROJECT_NAME}" PRIVATE
+	-Wall -Wextra -pedantic
 	)
 
 # Put your box2d or EnTT or any other library's include directory below
