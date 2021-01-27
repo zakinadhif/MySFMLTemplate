@@ -1,8 +1,7 @@
 #include "Engine/GameState.hpp"
 #include "Engine/GameStateManager.hpp"
 
-GameState::GameState(GameStateManager& gameStateManager)
-	: gameStateManager(gameStateManager)
+GameState::GameState()
 {
 	
 }

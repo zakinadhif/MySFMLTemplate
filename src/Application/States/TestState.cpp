@@ -3,7 +3,7 @@
 #include "Engine/GameStateManager.hpp"
 
 TestState::TestState(GameStateManager& gameStateManager)
-	: GameState(gameStateManager)
+	: gameStateManager(gameStateManager)
 {
 
 }

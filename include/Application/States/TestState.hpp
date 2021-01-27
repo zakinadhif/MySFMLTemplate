@@ -14,4 +14,5 @@ public:
 
 private:
 	sf::RectangleShape rect = sf::RectangleShape({100, 100});
+	GameStateManager& gameStateManager;
 };
