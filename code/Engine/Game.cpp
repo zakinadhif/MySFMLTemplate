@@ -28,3 +28,19 @@ void Game::draw() const
 	gameStateManager.draw(window);
 	window.display();
 }
+
+sf::RenderWindow& Game::getWindow()
+{
+	return window;
+}
+
+GameStateManager& Game::getStateManager()
+{
+	return gameStateManager;
+
+}
+
+bool Game::shouldExit() const
+{
+	return gameStateManager.isEmpty();
+}

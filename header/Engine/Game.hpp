@@ -18,10 +18,10 @@ public:
 	void update(const sf::Time& time);
 	void draw() const;
 
-	sf::RenderWindow& getWindow()
-	{
-		return window;
-	};
+	sf::RenderWindow& getWindow();
+	GameStateManager& getStateManager();
+
+	bool shouldExit() const;
 
 protected:
 	mutable sf::RenderWindow window;
