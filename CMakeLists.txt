@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16.3)
 
 project(GameSystem)
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS code/*.cpp)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
 
 add_executable("${PROJECT_NAME}" ${SOURCES})
 
@@ -23,7 +23,7 @@ target_compile_options(
 # Put your box2d or EnTT or any other library's include directory below
 target_include_directories(
 	"${PROJECT_NAME}" PRIVATE
-	header
+	include
 	)
 
 # Put your box2d or EnTT or any other library's lib directory below
