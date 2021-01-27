@@ -14,9 +14,9 @@ public:
 	    const sf::ContextSettings &settings = sf::ContextSettings()
 	);
 
-	void handleEvent(sf::Event event);
-	void update(const sf::Time& time);
-	void draw() const;
+	virtual void handleEvent(sf::Event event);
+	virtual void update(const sf::Time& time);
+	virtual void draw() const;
 
 	sf::RenderWindow& getWindow();
 	GameStateManager& getStateManager();
