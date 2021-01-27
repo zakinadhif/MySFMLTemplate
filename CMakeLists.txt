@@ -8,6 +8,7 @@ add_executable("${PROJECT_NAME}" ${SOURCES})
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+# Use C++17
 set_target_properties(
 	"${PROJECT_NAME}"
 	PROPERTIES
@@ -21,13 +22,13 @@ target_compile_options(
 
 # Put your box2d or EnTT or any other library's include directory below
 target_include_directories(
-	"${PROJECT_NAME}" PUBLIC
+	"${PROJECT_NAME}" PRIVATE
 	header
 	)
 
 # Put your box2d or EnTT or any other library's lib directory below
 target_link_directories(
-	"${PROJECT_NAME}" PUBLIC
+	"${PROJECT_NAME}" PRIVATE
 
 	)
 
