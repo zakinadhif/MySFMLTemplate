@@ -10,6 +10,10 @@ TestState::TestState(GameStateManager& gameStateManager)
 
 void TestState::handleEvent(sf::Event event)
 {
+	if (event.type == sf::Event::Closed)
+	{
+		gameStateManager.pop();
+	}
 }
 
 void TestState::draw(sf::RenderTarget& target) const 
