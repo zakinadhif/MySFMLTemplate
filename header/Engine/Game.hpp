@@ -23,6 +23,8 @@ public:
 
 	bool shouldExit() const;
 
+	virtual ~Game() = default;
+
 protected:
 	mutable sf::RenderWindow window;
 
