@@ -3,5 +3,6 @@
 /Debug
 /debug
 /bin
+.cache
 .clangd
 compile_commands.json
