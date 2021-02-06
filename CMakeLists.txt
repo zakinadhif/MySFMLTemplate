@@ -51,4 +51,5 @@ target_link_libraries(
 	GLU
 	glut
 	ImGui-SFML::ImGui-SFML
+	fmt
 	)
