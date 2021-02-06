@@ -2,6 +2,9 @@
 
 #include "Engine/GameState.hpp"
 
+#include <entt/entity/registry.hpp>
+#include <entt/entity/entity.hpp>
+
 class GameStateManager;
 
 class TestState : public GameState
@@ -15,4 +18,9 @@ public:
 private:
 	sf::RectangleShape rect = sf::RectangleShape({100, 100});
 	GameStateManager& gameStateManager;
+
+	sf::VertexArray rectangleMesh;
+	sf::VertexArray triangleMesh;
+
+	mutable entt::registry registry;
 };
