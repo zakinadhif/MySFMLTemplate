@@ -1,6 +1,9 @@
 #include "Engine/Scripting/LuaSecurity.hpp"
 
+#include <fstream>
 #include <sol/sol.hpp>
+
+#include <filesystem>
 
 namespace
 {
@@ -120,4 +123,44 @@ std::tuple<sol::object, sol::object> LuaSecurity::loadstring(const std::string& 
 	{
 		return std::make_tuple(sol::nil, sol::make_object(m_lua, ((sol::error) result).what()));
 	}
+}
+
+std::tuple<sol::object, sol::object> LuaSecurity::loadfile(const std::string& path)
+{
+	if (!checkPath(path))
+	{
+		return std::make_tuple(sol::nil, sol::make_object(m_lua, "Path is not allowed by Lua Sandbox"));
+	}
+
+	std::ifstream t(path);
+	std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+	return loadstring(str, "@" + path);
+}
+
+sol::object LuaSecurity::dofile(const std::string& path)
+{
+	std::tuple<sol::object, sol::object> ret = loadfile(path);
+	if (std::get<0>(ret) == sol::nil)
+	{
+		throw sol::error(std::get<1>(ret).as<std::string>());
+	}
+
+	sol::unsafe_function func = std::get<0>(ret);
+	return func();
+}
+
+bool LuaSecurity::checkPath(std::string_view filePath)
+{
+	if (basePath.empty())
+	{
+		return false;
+	}
+
+	auto base = std::filesystem::absolute(basePath).lexically_normal();
+	auto path = std::filesystem::absolute(filePath).lexically_normal();
+
+	auto [rootEnd, nothing] = std::mismatch(base.begin(), base.end(), path.begin());
+
+	return rootEnd == base.end();
 }

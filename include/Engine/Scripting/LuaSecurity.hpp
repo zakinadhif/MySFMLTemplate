@@ -14,11 +14,14 @@ public:
 
 	sol::environment& getEnvironment();
 
-	bool checkPath(std::string_view path, bool write);
+	bool checkPath(std::string_view path);
+	void setBasePath(const std::string& path);
 
 private:
 	sol::state_view m_lua;
 	sol::environment m_environment;
+
+	std::string basePath;
 
 	void buildEnvironment();
 
