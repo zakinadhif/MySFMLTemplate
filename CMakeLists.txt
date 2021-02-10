@@ -8,6 +8,8 @@ add_executable("${PROJECT_NAME}" ${SOURCES})
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+find_package(Lua REQUIRED)
+
 # Use C++17
 set_target_properties(
 	"${PROJECT_NAME}"
@@ -23,6 +25,7 @@ target_compile_options(
 # Put your box2d or EnTT or any other library's include directory below
 target_include_directories(
 	"${PROJECT_NAME}" PRIVATE
+	${LUA_INCLUDE_DIR}
 	include
 	)
 
@@ -44,6 +47,7 @@ find_package(ImGui-SFML REQUIRED)
 target_link_libraries(
 	"${PROJECT_NAME}"
 	PRIVATE
+	${LUA_LIBRARIES}
 	sfml-graphics
 	sfml-window
 	sfml-system
