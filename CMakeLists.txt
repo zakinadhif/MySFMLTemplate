@@ -17,6 +17,11 @@ set_target_properties(
 	CXX_STANDARD 17
 	)
 
+target_compile_definitions(
+	"${PROJECT_NAME}" PRIVATE
+	SOL_ALL_SAFETIES_ON=1
+	)
+
 target_compile_options(
 	"${PROJECT_NAME}" PRIVATE
 	-Wall -Wextra -pedantic
