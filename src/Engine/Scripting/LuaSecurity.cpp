@@ -87,6 +87,7 @@ void LuaSecurity::buildEnvironment()
 	os["time"] = m_lua["os"]["time"];
 	m_environment["os"] = os;
 
+	/*
 #if LUA_VERSION_NUM >= 502
 	lua_rawgeti(m_lua, LUA_REGISTRYINDEX, m_environment.registry_index());
 	lua_rawseti(m_lua, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
@@ -102,6 +103,17 @@ void LuaSecurity::buildEnvironment()
 	};
 	lua_pop(m_lua, 1); // Pop thread
 #endif
+	*/
+}
+
+sol::environment& LuaSecurity::getEnvironment()
+{
+	return m_environment;
+}
+
+void LuaSecurity::setBasePath(const std::string& path)
+{
+	basePath = path;
 }
 
 std::tuple<sol::object, sol::object> LuaSecurity::loadstring(const std::string& str, const std::string& chunkname)
