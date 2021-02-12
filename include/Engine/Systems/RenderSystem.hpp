@@ -6,8 +6,7 @@
 class RenderSystem
 {
 public:
-	static void update(entt::registry& registry, sf::RenderTarget& renderTarget);
+	RenderSystem() = delete;
 
-private:
-	RenderSystem();
+	static void update(entt::registry& registry, sf::RenderTarget& renderTarget);
 };
