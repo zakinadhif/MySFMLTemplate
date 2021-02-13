@@ -7,10 +7,10 @@
 #include <sol/sol.hpp>
 #include <tuple>
 
-class LuaSecurity
+class LuaSandbox
 {
 public:
-	LuaSecurity(sol::state_view lua);
+	LuaSandbox(sol::state_view lua);
 
 	sol::environment& getEnvironment();
 

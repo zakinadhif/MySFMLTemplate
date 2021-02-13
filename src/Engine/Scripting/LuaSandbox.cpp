@@ -1,4 +1,4 @@
-#include "Engine/Scripting/LuaSecurity.hpp"
+#include "Engine/Scripting/LuaSandbox.hpp"
 
 #include <fstream>
 #include <sol/sol.hpp>
@@ -34,13 +34,13 @@ namespace
 	}
 }
 
-LuaSecurity::LuaSecurity(sol::state_view lua)
+LuaSandbox::LuaSandbox(sol::state_view lua)
 	: m_lua(lua)
 {
 	buildEnvironment();
 }
 
-void LuaSecurity::buildEnvironment()
+void LuaSandbox::buildEnvironment()
 {
 	m_environment = sol::environment(m_lua, sol::create);
 	m_environment["_G"] = m_environment;
@@ -76,9 +76,9 @@ void LuaSecurity::buildEnvironment()
 	copyAll(m_environment, m_lua.globals(), whitelisted);
 	copyTables(m_environment, m_lua.globals(), m_lua, safeLibraries);
 
-	m_environment.set_function("loadstring", &LuaSecurity::loadstring, this);
-	m_environment.set_function("loadfile", &LuaSecurity::loadfile, this);
-	m_environment.set_function("dofile", &LuaSecurity::dofile, this);
+	m_environment.set_function("loadstring", &LuaSandbox::loadstring, this);
+	m_environment.set_function("loadfile", &LuaSandbox::loadfile, this);
+	m_environment.set_function("dofile", &LuaSandbox::dofile, this);
 	
 	sol::table os(m_lua, sol::create);
 	os["clock"] = m_lua["os"]["clock"];
@@ -106,17 +106,17 @@ void LuaSecurity::buildEnvironment()
 	*/
 }
 
-sol::environment& LuaSecurity::getEnvironment()
+sol::environment& LuaSandbox::getEnvironment()
 {
 	return m_environment;
 }
 
-void LuaSecurity::setBasePath(const std::string& path)
+void LuaSandbox::setBasePath(const std::string& path)
 {
 	basePath = path;
 }
 
-std::tuple<sol::object, sol::object> LuaSecurity::loadstring(const std::string& str, const std::string& chunkname)
+std::tuple<sol::object, sol::object> LuaSandbox::loadstring(const std::string& str, const std::string& chunkname)
 {
 	if (!str.empty() && str[0] == LUA_SIGNATURE[0])
 	{
@@ -137,7 +137,7 @@ std::tuple<sol::object, sol::object> LuaSecurity::loadstring(const std::string& 
 	}
 }
 
-std::tuple<sol::object, sol::object> LuaSecurity::loadfile(const std::string& path)
+std::tuple<sol::object, sol::object> LuaSandbox::loadfile(const std::string& path)
 {
 	if (!checkPath(path))
 	{
@@ -150,7 +150,7 @@ std::tuple<sol::object, sol::object> LuaSecurity::loadfile(const std::string& pa
 	return loadstring(str, "@" + path);
 }
 
-sol::object LuaSecurity::dofile(const std::string& path)
+sol::object LuaSandbox::dofile(const std::string& path)
 {
 	std::tuple<sol::object, sol::object> ret = loadfile(path);
 	if (std::get<0>(ret) == sol::nil)
@@ -162,7 +162,7 @@ sol::object LuaSecurity::dofile(const std::string& path)
 	return func();
 }
 
-bool LuaSecurity::checkPath(std::string_view filePath)
+bool LuaSandbox::checkPath(std::string_view filePath)
 {
 	if (basePath.empty())
 	{
