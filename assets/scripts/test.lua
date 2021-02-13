@@ -1,20 +1,20 @@
-local function onAttach()
+function OnAttach()
 
 end
 
-local function onDetach()
+function OnDetach()
 
 end
 
-local function handleEvent(event)
+function HandleEvent(event)
 
 end
 
-local function update(dt)
+function Update(dt)
 
 end
 
-local function fixedUpdate(dt)
-	
+function FixedUpdate(dt)
+
 end
-	
+
