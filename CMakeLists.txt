@@ -20,6 +20,7 @@ set_target_properties(
 target_compile_definitions(
 	"${PROJECT_NAME}" PRIVATE
 	SOL_ALL_SAFETIES_ON=1
+	SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_INFO
 	)
 
 target_compile_options(
