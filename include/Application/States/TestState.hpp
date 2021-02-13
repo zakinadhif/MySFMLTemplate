@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Engine/GameState.hpp"
+#include "Engine/Scripting/ScriptResource.hpp"
+#include "Engine/Systems/ScriptSystem.hpp"
 
 #include <entt/entity/registry.hpp>
 #include <entt/entity/entity.hpp>
@@ -13,6 +15,7 @@ public:
 	TestState(GameStateManager& gameStateManager);
 
 	void handleEvent(sf::Event event) override;
+	void update(const sf::Time& elapsed) override;
 	void draw(sf::RenderTarget& target) const override;
 
 private:
@@ -23,4 +26,8 @@ private:
 	sf::VertexArray triangleMesh;
 
 	mutable entt::registry registry;
+
+	ScriptResource aScript;
+
+	ScriptSystem scriptSystem;
 };

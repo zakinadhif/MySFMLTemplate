@@ -3,12 +3,22 @@
 #include "Engine/GameStateManager.hpp"
 #include "Engine/Components/Components.hpp"
 #include "Engine/Systems/RenderSystem.hpp"
+#include "Engine/Components/ScriptComponent.hpp"
 
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <iostream>
+#include <spdlog/spdlog.h>
 
 TestState::TestState(GameStateManager& gameStateManager)
 	: gameStateManager(gameStateManager)
+	, scriptSystem("")
 {
+	if (!aScript.loadFromFile("assets/scripts/test.lua"))
+	{
+		SPDLOG_ERROR("Can't load test.lua");
+		std::cerr << "Failed to load test.lua" << std::endl;
+	}
+
 	rectangleMesh.resize(4u);
 	rectangleMesh.setPrimitiveType(sf::Quads);
 	rectangleMesh.append({{0.f, 0.f}, sf::Color::Green});
@@ -25,6 +35,7 @@ TestState::TestState(GameStateManager& gameStateManager)
 	entt::entity entity = registry.create();
 	registry.emplace<MeshComponent>(entity, &rectangleMesh);
 	registry.emplace<TransformComponent>(entity);
+	registry.emplace<ScriptComponent>(entity, &aScript);
 
 	sf::Transformable& entityTransform = registry.get<TransformComponent>(entity).transform;
 	entityTransform.setPosition(400, 400);
@@ -37,6 +48,11 @@ void TestState::handleEvent(sf::Event event)
 	{
 		gameStateManager.pop();
 	}
+}
+
+void TestState::update(const sf::Time& elapsed)
+{
+	scriptSystem.update(registry);
 }
 
 void TestState::draw(sf::RenderTarget& target) const 
