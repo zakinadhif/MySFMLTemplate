@@ -2,6 +2,9 @@
 
 #include <fstream>
 
+namespace zfge
+{
+
 ScriptResource::ScriptResource()
 {
 
@@ -45,4 +48,6 @@ bool ScriptResource::isEmpty() const
 const std::string& ScriptResource::getSourceCode() const
 {
 	return m_sourceCode;
+}
+
 }

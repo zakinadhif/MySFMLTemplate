@@ -3,6 +3,9 @@
 #include <string>
 #include <string_view>
 
+namespace zfge
+{
+
 class ScriptResource
 {
 public:
@@ -21,3 +24,5 @@ private:
 	std::string m_path;
 	std::string m_sourceCode;
 };
+
+}

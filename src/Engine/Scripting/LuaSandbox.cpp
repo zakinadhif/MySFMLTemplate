@@ -5,6 +5,9 @@
 
 #include <filesystem>
 
+namespace zfge
+{
+
 namespace
 {
 	void copyAll(sol::environment& env, const sol::global_table& globals, const std::vector<std::string>& names)
@@ -175,4 +178,6 @@ bool LuaSandbox::checkPath(std::string_view filePath)
 	auto [rootEnd, nothing] = std::mismatch(base.begin(), base.end(), path.begin());
 
 	return rootEnd == base.end();
+}
+
 }

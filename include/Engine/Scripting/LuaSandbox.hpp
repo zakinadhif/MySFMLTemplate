@@ -7,6 +7,9 @@
 #include <sol/sol.hpp>
 #include <tuple>
 
+namespace zfge
+{
+
 class LuaSandbox
 {
 public:
@@ -44,3 +47,5 @@ private:
 	/// @return return value of the function
 	sol::object dofile(const std::string& path);
 };
+
+}
