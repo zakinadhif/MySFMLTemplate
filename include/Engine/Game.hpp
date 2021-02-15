@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Engine/GameStateManager.hpp"
+#include "Engine/Commons/GameStateManager.hpp"
 
 #include <SFML/Graphics.hpp>
+
+namespace zfge
+{
 
 class Game
 {
@@ -30,3 +33,5 @@ protected:
 
 	GameStateManager gameStateManager;
 };
+
+}

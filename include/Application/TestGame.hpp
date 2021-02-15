@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class TestGame : public Game
+class TestGame : public zfge::Game
 {
 public:
 	TestGame();

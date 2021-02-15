@@ -3,6 +3,9 @@
 #include <entt/entity/fwd.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
+namespace zfge
+{
+
 class RenderSystem
 {
 public:
@@ -10,3 +13,5 @@ public:
 
 	static void update(entt::registry& registry, sf::RenderTarget& renderTarget);
 };
+
+}

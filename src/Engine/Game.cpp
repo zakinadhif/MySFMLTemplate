@@ -1,6 +1,9 @@
 #include "Engine/Game.hpp"
 
-#include "Engine/GameState.hpp"
+#include "Engine/Commons/GameState.hpp"
+
+namespace zfge
+{
 
 Game::Game(
     sf::VideoMode mode,
@@ -43,4 +46,6 @@ GameStateManager& Game::getStateManager()
 bool Game::shouldExit() const
 {
 	return gameStateManager.isEmpty();
+}
+
 }

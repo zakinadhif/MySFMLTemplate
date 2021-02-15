@@ -1,5 +1,8 @@
 #pragma once
 
+namespace zfge
+{
+
 class ScriptResource;
 
 struct ScriptComponent
@@ -10,3 +13,5 @@ struct ScriptComponent
 	bool valid = false;
 	bool active = false;
 };
+
+}

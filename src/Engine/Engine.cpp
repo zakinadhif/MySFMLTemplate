@@ -4,6 +4,9 @@
 
 #include <cassert>
 
+namespace zfge
+{
+
 Engine::Engine()
 {
 }
@@ -36,4 +39,6 @@ void Engine::routine()
 Engine::~Engine()
 {
 	if (game) delete game;
+}
+
 }

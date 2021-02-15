@@ -2,6 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
+namespace zfge
+{
+
 class GameState
 {
 public:
@@ -13,3 +16,5 @@ public:
 
 	virtual ~GameState() = default;
 };
+
+}

@@ -2,6 +2,9 @@
 
 #include <utility>
 
+namespace zfge
+{
+
 class Game;
 
 class Engine
@@ -25,4 +28,6 @@ void Engine::run(Args&&... args)
 	game = new T(std::forward<Args>(args)...);
 
 	routine();
+}
+
 }

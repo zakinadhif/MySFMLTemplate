@@ -1,7 +1,10 @@
-#include "Engine/GameStateManager.hpp"
-#include "Engine/GameState.hpp"
+#include "Engine/Commons/GameStateManager.hpp"
+#include "Engine/Commons/GameState.hpp"
 
 #include <memory>
+
+namespace zfge
+{
 
 GameStateManager::GameStateManager()
 {
@@ -54,4 +57,6 @@ void GameStateManager::draw(sf::RenderTarget &target) const
 {
 	if (!states.empty())
 		peek().draw(target);
+}
+
 }
