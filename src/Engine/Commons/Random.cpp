@@ -1,8 +1,8 @@
-#include "Engine/Random.hpp"
+#include "Engine/Commons/Random.hpp"
 
 #include <random>
 
-namespace Random
+namespace zfge::Random
 {
 	static std::uniform_int_distribution<int> uniform_int_dist;
 	static std::uniform_real_distribution<float> uniform_float_distribution;

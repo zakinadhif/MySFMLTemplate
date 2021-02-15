@@ -1,11 +1,14 @@
 #pragma once
 
-#include "Engine/GameState.hpp"
+#include "Engine/Commons/GameState.hpp"
 
 #include <SFML/Graphics.hpp>
 
 #include <memory>
 #include <stack>
+
+namespace zfge
+{
 
 class GameStateManager
 {
@@ -28,3 +31,5 @@ public:
 private:
 	std::stack<std::unique_ptr<GameState>> states;
 };
+
+}
