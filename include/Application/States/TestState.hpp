@@ -1,18 +1,21 @@
 #pragma once
 
-#include "Engine/GameState.hpp"
+#include "Engine/Commons/GameState.hpp"
 #include "Engine/Scripting/ScriptResource.hpp"
-#include "Engine/Systems/ScriptSystem.hpp"
+#include "Engine/Scene/Systems/ScriptSystem.hpp"
 
 #include <entt/entity/registry.hpp>
 #include <entt/entity/entity.hpp>
 
+namespace zfge
+{
 class GameStateManager;
+}
 
-class TestState : public GameState
+class TestState : public zfge::GameState
 {
 public:
-	TestState(GameStateManager& gameStateManager);
+	TestState(zfge::GameStateManager& gameStateManager);
 
 	void handleEvent(sf::Event event) override;
 	void update(const sf::Time& elapsed) override;
@@ -20,14 +23,14 @@ public:
 
 private:
 	sf::RectangleShape rect = sf::RectangleShape({100, 100});
-	GameStateManager& gameStateManager;
+	zfge::GameStateManager& gameStateManager;
 
 	sf::VertexArray rectangleMesh;
 	sf::VertexArray triangleMesh;
 
 	mutable entt::registry registry;
 
-	ScriptResource aScript;
+	zfge::ScriptResource aScript;
 
-	ScriptSystem scriptSystem;
+	zfge::ScriptSystem scriptSystem;
 };

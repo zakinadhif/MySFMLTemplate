@@ -1,15 +1,15 @@
 #include "Application/States/TestState.hpp"
 
-#include "Engine/GameStateManager.hpp"
-#include "Engine/Components/Components.hpp"
-#include "Engine/Systems/RenderSystem.hpp"
-#include "Engine/Components/ScriptComponent.hpp"
+#include "Engine/Commons/GameStateManager.hpp"
+#include "Engine/Scene/Components/Components.hpp"
+#include "Engine/Scene/Systems/RenderSystem.hpp"
+#include "Engine/Scene/Components/ScriptComponent.hpp"
 
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <iostream>
 #include <spdlog/spdlog.h>
 
-TestState::TestState(GameStateManager& gameStateManager)
+TestState::TestState(zfge::GameStateManager& gameStateManager)
 	: gameStateManager(gameStateManager)
 	, scriptSystem("")
 {
@@ -33,11 +33,11 @@ TestState::TestState(GameStateManager& gameStateManager)
 	triangleMesh.append({{0.0f, 1.0f}, sf::Color::Blue});
 
 	entt::entity entity = registry.create();
-	registry.emplace<MeshComponent>(entity, &rectangleMesh);
-	registry.emplace<TransformComponent>(entity);
-	registry.emplace<ScriptComponent>(entity, &aScript);
+	registry.emplace<zfge::MeshComponent>(entity, &rectangleMesh);
+	registry.emplace<zfge::TransformComponent>(entity);
+	registry.emplace<zfge::ScriptComponent>(entity, &aScript);
 
-	sf::Transformable& entityTransform = registry.get<TransformComponent>(entity).transform;
+	sf::Transformable& entityTransform = registry.get<zfge::TransformComponent>(entity).transform;
 	entityTransform.setPosition(400, 400);
 	entityTransform.setScale(200,200);
 }
@@ -57,5 +57,5 @@ void TestState::update(const sf::Time& elapsed)
 
 void TestState::draw(sf::RenderTarget& target) const 
 {
-	RenderSystem::update(registry, target);
+	zfge::RenderSystem::update(registry, target);
 }

@@ -5,7 +5,7 @@
 
 int main()
 {
-	Engine engine;
+	zfge::Engine engine;
 	engine.run<TestGame>();
 
 	return 0;
