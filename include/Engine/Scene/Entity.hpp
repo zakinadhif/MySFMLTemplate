@@ -3,6 +3,9 @@
 #include <entt/entt.hpp>
 #include <fmt/format.h>
 
+namespace zfge
+{
+
 class Entity
 {
 public:
@@ -57,3 +60,5 @@ private:
 	entt::entity m_entityHandle { entt::null };
 	entt::registry* m_registry = nullptr;
 };
+
+}

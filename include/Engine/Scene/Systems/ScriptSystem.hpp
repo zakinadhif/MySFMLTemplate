@@ -6,6 +6,9 @@
 #include <sol/forward.hpp>
 #include <sol/state.hpp>
 
+namespace zfge
+{
+
 class ScriptSystem
 {
 public:
@@ -22,3 +25,5 @@ private:
 	void initializeComponent(struct ScriptComponent& sc);
 	bool isValid(struct ScriptComponent& sc);
 };
+
+}

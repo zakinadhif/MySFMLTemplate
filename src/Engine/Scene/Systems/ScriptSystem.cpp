@@ -1,11 +1,14 @@
-#include "Engine/Systems/ScriptSystem.hpp"
+#include "Engine/Scene/Systems/ScriptSystem.hpp"
 
-#include "Engine/Components/ScriptComponent.hpp"
+#include "Engine/Scene/Components/ScriptComponent.hpp"
 #include "Engine/Scripting/ScriptResource.hpp"
 
 #include <entt/entt.hpp>
 #include <sol/sol.hpp>
 #include <spdlog/spdlog.h>
+
+namespace zfge
+{
 
 ScriptSystem::ScriptSystem(const std::string& basePath)
 	: m_basePath(basePath)
@@ -83,3 +86,4 @@ void ScriptSystem::initializeComponent(ScriptComponent& sc)
 	sc.active = true;
 }
 
+}

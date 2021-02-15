@@ -1,11 +1,14 @@
-#include "Engine/Systems/RenderSystem.hpp"
+#include "Engine/Scene/Systems/RenderSystem.hpp"
 
-#include "Engine/Components/MeshComponent.hpp"
-#include "Engine/Components/SpriteComponent.hpp"
-#include "Engine/Components/TransformComponent.hpp"
+#include "Engine/Scene/Components/MeshComponent.hpp"
+#include "Engine/Scene/Components/SpriteComponent.hpp"
+#include "Engine/Scene/Components/TransformComponent.hpp"
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
+
+namespace zfge
+{
 
 void RenderSystem::update(entt::registry& registry, sf::RenderTarget& renderTarget)
 {
@@ -43,4 +46,6 @@ void RenderSystem::update(entt::registry& registry, sf::RenderTarget& renderTarg
 			renderTarget.draw(*view.get<MeshComponent>(entity).mesh);
 		}
 	}
+}
+
 }
