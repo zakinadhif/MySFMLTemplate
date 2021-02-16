@@ -5,4 +5,5 @@
 /bin
 .cache
 .clangd
+.gdb_history
 compile_commands.json
