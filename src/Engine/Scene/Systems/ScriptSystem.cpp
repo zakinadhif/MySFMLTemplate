@@ -10,8 +10,9 @@
 namespace zfge
 {
 
-ScriptSystem::ScriptSystem(const std::string& basePath)
-	: m_basePath(basePath)
+ScriptSystem::ScriptSystem(sol::state& lua, const std::string& basePath)
+	: m_lua(lua)
+	, m_basePath(basePath)
 {
 	m_lua.open_libraries();
 }
@@ -47,18 +48,30 @@ sol::environment& ScriptSystem::createSandbox()
 
 void ScriptSystem::initializeComponent(ScriptComponent& sc)
 {
-	sol::environment& environment = createSandbox();
-	
-	auto sourceCode = sc.script->getSourceCode();
-	
-	auto result = m_lua.safe_script(sourceCode, environment);
-	if (!result.valid())
+	if (!sc.script->isValid())
 	{
-		SPDLOG_WARN("Can't initialize ScriptComponent {}. Disabling the script.", static_cast<void*>(&sc));
+		SPDLOG_WARN("ScriptSystem: Component initialization failed. Reason: Loaded script is invalid.");
 		sc.initialized = true;
 		sc.valid = false;
 		sc.active = false;
+		
+		return;
+	}
 
+	sol::environment& sandboxEnvironment = createSandbox();
+
+	sol::protected_function scriptFunction = sc.script->getCompiledFunction();
+	sandboxEnvironment.set_on(scriptFunction);
+
+	sol::protected_function_result scriptExecutionResult = scriptFunction();
+	
+	if (!scriptExecutionResult.valid())
+	{
+		SPDLOG_WARN("ScriptSystem: Component execution failed. Reason: {}", ((sol::error)scriptExecutionResult).what());
+		sc.initialized = true;
+		sc.valid = false;
+		sc.active = false;
+		
 		return;
 	}
 
@@ -68,7 +81,7 @@ void ScriptSystem::initializeComponent(ScriptComponent& sc)
 
 	for (const auto& name : requiredFunctions)
 	{
-		if (environment.get<sol::object>(name) == sol::nil)
+		if (sandboxEnvironment.get<sol::object>(name) == sol::nil)
 		{
 			SPDLOG_WARN("Script {} doesn't meet the structure requirements. Disabling it", static_cast<void*>(&sc));
 			sc.initialized = true;

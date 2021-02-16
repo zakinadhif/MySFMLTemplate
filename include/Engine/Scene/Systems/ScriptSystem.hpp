@@ -9,14 +9,17 @@
 namespace zfge
 {
 
+class ScriptResource;
+
 class ScriptSystem
 {
 public:
-	ScriptSystem(const std::string& scriptBasePath);
+	ScriptSystem(sol::state& lua, const std::string& scriptBasePath);
 
 	void update(entt::registry& registry);
+
 private:
-	sol::state m_lua;
+	sol::state& m_lua;
 
 	std::vector<LuaSandbox> m_sandboxes;
 	const std::string m_basePath;
