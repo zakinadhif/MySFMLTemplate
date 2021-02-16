@@ -28,6 +28,7 @@ private:
 	sf::VertexArray rectangleMesh;
 	sf::VertexArray triangleMesh;
 
+	sol::state m_lua;
 	mutable entt::registry registry;
 
 	zfge::ScriptResource aScript;

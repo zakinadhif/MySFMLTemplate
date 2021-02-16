@@ -11,7 +11,8 @@
 
 TestState::TestState(zfge::GameStateManager& gameStateManager)
 	: gameStateManager(gameStateManager)
-	, scriptSystem("")
+	, aScript(m_lua)
+	, scriptSystem(m_lua, "")
 {
 	if (!aScript.loadFromFile("assets/scripts/test.lua"))
 	{
