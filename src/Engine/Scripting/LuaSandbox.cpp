@@ -10,7 +10,7 @@ namespace zfge
 
 namespace
 {
-	void copyAll(sol::environment& env, const sol::global_table& globals, const std::vector<std::string>& names)
+	void copyAll(sol::environment env, const sol::global_table globals, const std::vector<std::string>& names)
 	{
 		for (const auto& name : names)
 		{
@@ -18,7 +18,7 @@ namespace
 		}
 	}
 
-	sol::table deepCopy(sol::state_view lua, const sol::table& table)
+	sol::table deepCopy(sol::state_view lua, const sol::table table)
 	{
 		sol::table table2(lua, sol::create);
 		for (auto pair : table)
@@ -28,7 +28,7 @@ namespace
 		return table2;
 	}
 
-	void copyTables(sol::environment& env, const sol::global_table& globals, sol::state_view lua, const std::vector<std::string>& names)
+	void copyTables(sol::environment env, const sol::global_table globals, sol::state_view lua, const std::vector<std::string>& names)
 	{
 		for (const auto& name : names)
 		{
@@ -37,9 +37,12 @@ namespace
 	}
 }
 
-LuaSandbox::LuaSandbox(sol::state_view lua)
-	: m_lua(lua)
+LuaSandbox::LuaSandbox(sol::state_view lua, const std::string& scriptBasePath, bool openRequiredLibs)
+	: m_lua(lua), m_scriptBasePath(scriptBasePath)
 {
+	if (openRequiredLibs)
+		m_lua.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::table, sol::lib::math, sol::lib::os);
+
 	buildEnvironment();
 }
 
@@ -109,14 +112,9 @@ void LuaSandbox::buildEnvironment()
 	*/
 }
 
-sol::environment& LuaSandbox::getEnvironment()
+sol::environment LuaSandbox::getEnvironment()
 {
 	return m_environment;
-}
-
-void LuaSandbox::setBasePath(const std::string& path)
-{
-	basePath = path;
 }
 
 std::tuple<sol::object, sol::object> LuaSandbox::loadstring(const std::string& str, const std::string& chunkname)
@@ -167,12 +165,12 @@ sol::object LuaSandbox::dofile(const std::string& path)
 
 bool LuaSandbox::checkPath(std::string_view filePath)
 {
-	if (basePath.empty())
+	if (m_scriptBasePath.empty())
 	{
 		return false;
 	}
 
-	auto base = std::filesystem::absolute(basePath).lexically_normal();
+	auto base = std::filesystem::absolute(m_scriptBasePath).lexically_normal();
 	auto path = std::filesystem::absolute(filePath).lexically_normal();
 
 	auto [rootEnd, nothing] = std::mismatch(base.begin(), base.end(), path.begin());
@@ -180,4 +178,5 @@ bool LuaSandbox::checkPath(std::string_view filePath)
 	return rootEnd == base.end();
 }
 
-}
+} // namespace zfge
+

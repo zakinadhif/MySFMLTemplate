@@ -13,18 +13,20 @@ namespace zfge
 class LuaSandbox
 {
 public:
-	LuaSandbox(sol::state_view lua);
+	LuaSandbox(sol::state_view lua, const std::string& basePath = "", bool openRequiredLibs = false);
 
-	sol::environment& getEnvironment();
+	LuaSandbox(const LuaSandbox& copy) = delete;
+	LuaSandbox& operator=(const LuaSandbox& other) = delete;
+
+	sol::environment getEnvironment();
 
 	bool checkPath(std::string_view path);
-	void setBasePath(const std::string& path);
 
 private:
 	sol::state_view m_lua;
 	sol::environment m_environment;
 
-	std::string basePath;
+	const std::string m_scriptBasePath;
 
 	void buildEnvironment();
 
