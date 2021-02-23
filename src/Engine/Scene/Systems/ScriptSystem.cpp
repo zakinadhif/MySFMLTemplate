@@ -1,7 +1,7 @@
 #include "Engine/Scene/Systems/ScriptSystem.hpp"
 
 #include "Engine/Scene/Components/ScriptComponent.hpp"
-#include "Engine/Scripting/ScriptResource.hpp"
+#include "Engine/Scripting/ScriptInstantiator.hpp"
 
 #include <entt/entt.hpp>
 #include <sol/sol.hpp>
@@ -10,93 +10,71 @@
 namespace zfge
 {
 
-ScriptSystem::ScriptSystem(sol::state& lua, const std::string& basePath)
-	: m_lua(lua)
-	, m_basePath(basePath)
+namespace
 {
-	m_lua.open_libraries();
-}
-
-void ScriptSystem::update(entt::registry& registry)
-{
-	auto view = registry.view<ScriptComponent>();
-
-	for (auto entity : view)
+	void callOnAttach(entt::registry& registry, entt::entity entity)
 	{
-		ScriptComponent& sc = view.get<ScriptComponent>(entity);
+		ScriptComponent& sc = registry.get<ScriptComponent>(entity);
 
-		// Initialize uninitialized scripts
-		if (!sc.initialized)
-		{
-			initializeComponent(sc);
-		}
+		sc.onAttach();
+	}
 
-		if (sc.valid)
-		{
-		}
+	void callOnDetach(entt::registry& registry, entt::entity entity)
+	{
+		ScriptComponent& sc = registry.get<ScriptComponent>(entity);
+
+		sc.onDetach();
 	}
 }
 
-sol::environment& ScriptSystem::createSandbox()
+ScriptSystem::ScriptSystem(entt::registry& registry, sol::state_view lua, const std::string& basePath)
+	: m_basePath(basePath)
+	, m_registry(registry)
+	, m_lua(lua)
+	, m_sandbox(lua)
 {
-	m_sandboxes.emplace_back(m_lua);
-	LuaSandbox& sandbox = m_sandboxes.back();
-	sandbox.setBasePath(m_basePath);
+	// Loads middleclass if it's not defined yet
+	if (m_lua.get<sol::object>("class") == sol::nil)
+	{
+		m_lua.do_file("external/middleclass/middleclass.lua");
+	}
 
-	return sandbox.getEnvironment();
+	m_registry.on_construct<ScriptComponent>().connect<&callOnAttach>();
+	m_registry.on_destroy<ScriptComponent>().connect<&callOnDetach>();
 }
 
-void ScriptSystem::initializeComponent(ScriptComponent& sc)
+ScriptInstantiator& ScriptSystem::makeScriptInstantiator(std::string_view path)
 {
-	if (!sc.script->isValid())
-	{
-		SPDLOG_WARN("ScriptSystem: Component initialization failed. Reason: Loaded script is invalid.");
-		sc.initialized = true;
-		sc.valid = false;
-		sc.active = false;
-		
-		return;
-	}
-
-	sol::environment& sandboxEnvironment = createSandbox();
-
-	sol::protected_function scriptFunction = sc.script->getCompiledFunction();
-	sandboxEnvironment.set_on(scriptFunction);
-
-	sol::protected_function_result scriptExecutionResult = scriptFunction();
-	
-	if (!scriptExecutionResult.valid())
-	{
-		SPDLOG_WARN("ScriptSystem: Component execution failed. Reason: {}", ((sol::error)scriptExecutionResult).what());
-		sc.initialized = true;
-		sc.valid = false;
-		sc.active = false;
-		
-		return;
-	}
-
-	const std::vector<std::string> requiredFunctions = {
-		"OnAttach", "OnDetach", "HandleEvent", "Update", "FixedUpdate"
-	};
-
-	for (const auto& name : requiredFunctions)
-	{
-		if (sandboxEnvironment.get<sol::object>(name) == sol::nil)
-		{
-			SPDLOG_WARN("Script {} doesn't meet the structure requirements. Disabling it", static_cast<void*>(&sc));
-			sc.initialized = true;
-			sc.valid = false;
-			sc.active = false;
-
-			return;
-		}
-	}
-
-	SPDLOG_INFO("Successfully initialized {} script.", static_cast<void*>(&sc));
-
-	sc.initialized = true;
-	sc.valid = true;
-	sc.active = true;
+	// TODO: Implement this
 }
 
+void ScriptSystem::update(float deltaTime)
+{
+	auto view = m_registry.view<ScriptComponent>();
+
+	for (auto& entity : view)
+	{
+		auto& scriptComponent = view.get<ScriptComponent>(entity);
+
+		scriptComponent.onUpdate(deltaTime);
+	}
 }
+
+void ScriptSystem::fixedUpdate(float deltaTime)
+{
+	auto view = m_registry.view<ScriptComponent>();
+
+	for (auto& entity : view)
+	{
+		auto& scriptComponent = view.get<ScriptComponent>(entity);
+
+		scriptComponent.onFixedUpdate(deltaTime);
+	}
+}
+
+sol::environment ScriptSystem::getEnvironment()
+{
+	return m_sandbox.getEnvironment();
+}
+
+} // namespace zfge
