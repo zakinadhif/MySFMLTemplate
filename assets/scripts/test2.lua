@@ -1,12 +1,26 @@
-local entity = ...
-local script = {}
+local class = require("external/middleclass/middleclass.lua")
 
-function script:onAttach()
+-- local entity = ...
+local NameScript = class('NameScript')
+
+function NameScript:initialize(name)
+	self.name = name
+end
+
+function NameScript:onAttach()
 	-- do something
 end
 
-function script:onUpdate(dt)
-	print(dt)
+function NameScript:onDetach()
+	-- do something
 end
 
-return script
+function NameScript:onFixedUpdate()
+	-- do something
+end
+
+function NameScript:onUpdate(dt)
+	print(self.name .. ": Called with deltatime of " .. dt)
+end
+
+return NameScript
