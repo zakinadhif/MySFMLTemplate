@@ -1,0 +1,3 @@
+[submodule "external/middleclass"]
+	path = external/middleclass
+	url = https://github.com/kikito/middleclass
