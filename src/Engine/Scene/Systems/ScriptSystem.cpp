@@ -27,25 +27,29 @@ namespace
 	}
 }
 
-ScriptSystem::ScriptSystem(entt::registry& registry, sol::state_view lua, const std::string& basePath)
+ScriptSystem::ScriptSystem(entt::registry& registry, const std::string& basePath)
 	: m_basePath(basePath)
 	, m_registry(registry)
-	, m_lua(lua)
-	, m_sandbox(lua)
 {
-	// Loads middleclass if it's not defined yet
-	if (m_lua.get<sol::object>("class") == sol::nil)
-	{
-		m_lua.do_file("external/middleclass/middleclass.lua");
-	}
+	// Opens required libraries
+	m_lua.open_libraries(
+			sol::lib::base, sol::lib::os, sol::lib::math, sol::lib::string,
+			sol::lib::coroutine, sol::lib::table);
+
+	// Opens middleclass
+	m_lua.require_file("class", "external/middleclass/middleclass.lua");
 
 	m_registry.on_construct<ScriptComponent>().connect<&callOnAttach>();
 	m_registry.on_destroy<ScriptComponent>().connect<&callOnDetach>();
+
+	m_sandbox = std::make_unique<LuaSandbox>(m_lua);
 }
 
-ScriptInstantiator& ScriptSystem::makeScriptInstantiator(std::string_view path)
+ScriptInstantiator& ScriptSystem::makeScriptInstantiator(const std::string& path)
 {
-	// TODO: Implement this
+	auto& instantiator = m_scriptInstantiators.emplace_back(m_lua, m_sandbox->getEnvironment());
+	instantiator.loadFromFile(path);
+	return instantiator;
 }
 
 void ScriptSystem::update(float deltaTime)
@@ -74,7 +78,7 @@ void ScriptSystem::fixedUpdate(float deltaTime)
 
 sol::environment ScriptSystem::getEnvironment()
 {
-	return m_sandbox.getEnvironment();
+	return m_sandbox->getEnvironment();
 }
 
 } // namespace zfge

@@ -10,14 +10,12 @@
 namespace zfge
 {
 
-class ScriptResource;
-
 class ScriptSystem
 {
 public:
-	ScriptSystem(entt::registry& registry, sol::state_view lua, const std::string& scriptBasePath);	
+	ScriptSystem(entt::registry& registry, const std::string& scriptBasePath);	
 
-	ScriptInstantiator& makeScriptInstantiator(std::string_view path);
+	ScriptInstantiator& makeScriptInstantiator(const std::string& path);
 
 	void update(float deltaTime);
 	void fixedUpdate(float deltaTime);
@@ -28,9 +26,9 @@ private:
 	const std::string m_basePath;
 	
 	entt::registry& m_registry;
-	sol::state_view m_lua;
+	sol::state m_lua;
 	
-	LuaSandbox m_sandbox;
+	std::unique_ptr<LuaSandbox> m_sandbox;
 	std::vector<ScriptInstantiator> m_scriptInstantiators;
 };
 
