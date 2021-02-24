@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Commons/GameState.hpp"
-#include "Engine/Scripting/ScriptResource.hpp"
+#include "Engine/Scripting/ScriptInstantiator.hpp"
 #include "Engine/Scene/Systems/ScriptSystem.hpp"
 
 #include <entt/entity/registry.hpp>
@@ -21,6 +21,8 @@ public:
 	void update(const sf::Time& elapsed) override;
 	void draw(sf::RenderTarget& target) const override;
 
+	~TestState();
+
 private:
 	sf::RectangleShape rect = sf::RectangleShape({100, 100});
 	zfge::GameStateManager& gameStateManager;
@@ -28,10 +30,7 @@ private:
 	sf::VertexArray rectangleMesh;
 	sf::VertexArray triangleMesh;
 
-	sol::state m_lua;
-	mutable entt::registry registry;
-
-	zfge::ScriptResource aScript;
+	entt::registry registry;
 
 	zfge::ScriptSystem scriptSystem;
 };

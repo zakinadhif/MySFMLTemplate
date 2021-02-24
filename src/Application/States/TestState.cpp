@@ -4,6 +4,7 @@
 #include "Engine/Scene/Components/Components.hpp"
 #include "Engine/Scene/Systems/RenderSystem.hpp"
 #include "Engine/Scene/Components/ScriptComponent.hpp"
+#include "Engine/Scene/Systems/ScriptSystem.hpp"
 
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <iostream>
@@ -11,15 +12,8 @@
 
 TestState::TestState(zfge::GameStateManager& gameStateManager)
 	: gameStateManager(gameStateManager)
-	, aScript(m_lua)
-	, scriptSystem(m_lua, "")
+	, scriptSystem(registry, "")
 {
-	if (!aScript.loadFromFile("assets/scripts/test.lua"))
-	{
-		SPDLOG_ERROR("Can't load test.lua");
-		std::cerr << "Failed to load test.lua" << std::endl;
-	}
-
 	rectangleMesh.resize(4u);
 	rectangleMesh.setPrimitiveType(sf::Quads);
 	rectangleMesh.append({{0.f, 0.f}, sf::Color::Green});
@@ -35,8 +29,9 @@ TestState::TestState(zfge::GameStateManager& gameStateManager)
 
 	entt::entity entity = registry.create();
 	registry.emplace<zfge::MeshComponent>(entity, &rectangleMesh);
-	registry.emplace<zfge::TransformComponent>(entity);
-	registry.emplace<zfge::ScriptComponent>(entity, &aScript);
+	auto& transform = registry.emplace<zfge::TransformComponent>(entity);
+	transform.transform.setPosition(10,10);
+	transform.transform.setRotation(10);
 
 	sf::Transformable& entityTransform = registry.get<zfge::TransformComponent>(entity).transform;
 	entityTransform.setPosition(400, 400);
@@ -53,10 +48,14 @@ void TestState::handleEvent(sf::Event event)
 
 void TestState::update(const sf::Time& elapsed)
 {
-	scriptSystem.update(registry);
+	scriptSystem.update(elapsed.asSeconds());
 }
 
 void TestState::draw(sf::RenderTarget& target) const 
 {
 	zfge::RenderSystem::update(registry, target);
+}
+
+TestState::~TestState()
+{
 }
