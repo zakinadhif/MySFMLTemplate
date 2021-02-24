@@ -10,9 +10,9 @@
 namespace zfge
 {
 
-void RenderSystem::update(entt::registry& registry, sf::RenderTarget& renderTarget)
+void RenderSystem::update(const entt::registry& registry, sf::RenderTarget& renderTarget)
 {
-	auto view = registry.view<MeshComponent>();
+	auto view = registry.view<const MeshComponent>();
 
 	for (auto entity : view)
 	{
@@ -20,30 +20,30 @@ void RenderSystem::update(entt::registry& registry, sf::RenderTarget& renderTarg
 		{
 			if (registry.has<TransformComponent, SpriteComponent>(entity))
 			{
-				const sf::VertexArray* const mesh = view.get<MeshComponent>(entity).mesh;
-				const sf::Texture* const texture = registry.get<SpriteComponent>(entity).texture;
-				const sf::Transform transform = registry.get<TransformComponent>(entity).transform.getTransform();
+				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
+				const sf::Texture* const texture = registry.get<const SpriteComponent>(entity).texture;
+				const sf::Transform& transform = registry.get<const TransformComponent>(entity).transform.getTransform();
 
 				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, transform, texture, nullptr));
 			}
 			else if (registry.has<TransformComponent>(entity))
 			{
-				const sf::VertexArray* const mesh = view.get<MeshComponent>(entity).mesh;
-				const sf::Transform transform = registry.get<TransformComponent>(entity).transform.getTransform();
+				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
+				const sf::Transform& transform = registry.get<const TransformComponent>(entity).transform.getTransform();
 				
 				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, transform, nullptr, nullptr));
 			}
 			else if (registry.has<SpriteComponent>(entity))
 			{	
-				const sf::VertexArray* const mesh = view.get<MeshComponent>(entity).mesh;
-				const sf::Texture* const texture = registry.get<SpriteComponent>(entity).texture;
+				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
+				const sf::Texture* const texture = registry.get<const SpriteComponent>(entity).texture;
 
 				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, sf::Transform(), texture, nullptr));
 			}
 		}
 		else 
 		{
-			renderTarget.draw(*view.get<MeshComponent>(entity).mesh);
+			renderTarget.draw(*view.get<const MeshComponent>(entity).mesh);
 		}
 	}
 }

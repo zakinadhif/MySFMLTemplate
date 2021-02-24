@@ -11,7 +11,7 @@ class RenderSystem
 public:
 	RenderSystem() = delete;
 
-	static void update(entt::registry& registry, sf::RenderTarget& renderTarget);
+	static void update(const entt::registry& registry, sf::RenderTarget& renderTarget);
 };
 
 }
