@@ -28,6 +28,7 @@ void ScriptInstantiator::loadFromFile(const std::string& path)
 	// TODO: !!URGENT!! Prevent bytecode code from being loaded.
 	sol::load_result loadResult = m_lua.load_file(path, sol::load_mode::text);
 	
+	// TODO: Use proper exception class.
 	// Check if the script has the required methods.
 	// Maintains strong exception guarantee.
 	sol::table scriptClass = loadResult();
@@ -38,12 +39,12 @@ void ScriptInstantiator::loadFromFile(const std::string& path)
 	m_valid = true;
 }
 
-bool ScriptInstantiator::isValid() const
+bool ScriptInstantiator::isValid() const noexcept
 {
 	return m_valid;
 }
 
-std::string_view ScriptInstantiator::getPath() const
+std::string_view ScriptInstantiator::getPath() const noexcept
 {
 	return m_path;
 }

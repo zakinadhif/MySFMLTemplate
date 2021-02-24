@@ -11,10 +11,12 @@ namespace zfge
 
 /* ScriptInstantiator
  * @purpose
- *  Provides a way to instantiate a script class.
+ *  Loads a script class file.
  *  Ensures the script class has all required methods.
+ *  Provides a way to instantiate the script class.
  * @TODO
  *  !!URGENT!! Prevent bytecode from being loaded.
+ *  Use proper exception class.
  */
 
 class ScriptInstantiator
@@ -25,11 +27,11 @@ public:
 
 	void loadFromFile(const std::string& path);
 
-	bool isValid() const;
-	std::string_view getPath() const;
+	bool isValid() const noexcept;
+	std::string_view getPath() const noexcept;
 
 	template<typename... Args>
-	sol::table instance(Args&&... args);
+	[[nodiscard]] sol::table instance(Args&&... args);
 
 private:
 	bool scriptMeetsRequirements(sol::table scriptTable) const;
