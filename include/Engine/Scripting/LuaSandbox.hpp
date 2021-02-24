@@ -1,6 +1,20 @@
 #pragma once
 
-/* Sandboxing for Lua Scripts
+/* LuaSandbox
+ * @purpose
+ *  Provide a sandboxed environment for lua scripts.
+ * @description
+ *  Lua state must have these lua libs loaded:
+ *   - sol::lib::base
+ *   - sol::lib::os 
+ *   - sol::lib::coroutine
+ *   - sol::lib::string
+ *   - sol::lib::table
+ *   - sol::lib::math
+ * @TODO
+ *  Redesign LuaSandbox to meet design needs.
+ *  Refactor code.
+ *
  * Thank you to @rubenwardy
  */
 
@@ -13,7 +27,7 @@ namespace zfge
 class LuaSandbox
 {
 public:
-	LuaSandbox(sol::state_view lua, const std::string& basePath = "", bool openRequiredLibs = false);
+	LuaSandbox(sol::state_view lua, const std::string& basePath = "");
 
 	LuaSandbox(const LuaSandbox& copy) = delete;
 	LuaSandbox& operator=(const LuaSandbox& other) = delete;

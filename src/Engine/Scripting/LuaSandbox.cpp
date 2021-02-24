@@ -37,12 +37,9 @@ namespace
 	}
 }
 
-LuaSandbox::LuaSandbox(sol::state_view lua, const std::string& scriptBasePath, bool openRequiredLibs)
+LuaSandbox::LuaSandbox(sol::state_view lua, const std::string& scriptBasePath)
 	: m_lua(lua), m_scriptBasePath(scriptBasePath)
 {
-	if (openRequiredLibs)
-		m_lua.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::table, sol::lib::math, sol::lib::os);
-
 	buildEnvironment();
 }
 
@@ -76,7 +73,7 @@ void LuaSandbox::buildEnvironment()
 	};
 
 	const std::vector<std::string> safeLibraries = {
-		"coroutine", "string", "table", "math"
+		"coroutine", "string", "table", "math", "class"
 	};
 
 	copyAll(m_environment, m_lua.globals(), whitelisted);
@@ -92,24 +89,6 @@ void LuaSandbox::buildEnvironment()
 	os["difftime"] = m_lua["os"]["difftime"];
 	os["time"] = m_lua["os"]["time"];
 	m_environment["os"] = os;
-
-	/*
-#if LUA_VERSION_NUM >= 502
-	lua_rawgeti(m_lua, LUA_REGISTRYINDEX, m_environment.registry_index());
-	lua_rawseti(m_lua, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
-#else
-	int is_main = lua_pushthread(m_lua);
-	int thread = lua_gettop(m_lua);
-
-	lua_rawgeti(m_lua, LUA_REGISTRYINDEX, m_environment.registry_index());
-
-	if (!lua_setfenv(m_lua, thread)) {
-		throw ModException(
-				"Security: Unable to set environment of the main Lua thread!");
-	};
-	lua_pop(m_lua, 1); // Pop thread
-#endif
-	*/
 }
 
 sol::environment LuaSandbox::getEnvironment()
