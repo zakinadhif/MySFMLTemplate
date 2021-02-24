@@ -14,65 +14,52 @@ ScriptInstantiator::ScriptInstantiator(sol::state_view lua, sol::environment env
 }
 
 ScriptInstantiator::ScriptInstantiator(ScriptInstantiator&& other) noexcept
-	: m_lua(other.m_lua)
+	: m_valid(other.m_valid)
+	, m_lua(other.m_lua)
 	, m_environment(other.m_environment)
 	, m_path(std::move(other.m_path))
-	, m_instancer(std::move(other.m_instancer))
+	, m_scriptClass(std::move(other.m_scriptClass))
 {
+	other.m_valid = false;
 }
 
-bool ScriptInstantiator::loadFromFile(const std::string& path)
+void ScriptInstantiator::loadFromFile(const std::string& path)
 {
-	std::string sourceCode;
+	// TODO: !!URGENT!! Prevent bytecode code from being loaded.
+	sol::load_result loadResult = m_lua.load_file(path, sol::load_mode::text);
+	
+	// Check if the script has the required methods.
+	// Maintains strong exception guarantee.
+	sol::table scriptClass = loadResult();
+	if (!scriptMeetsRequirements(scriptClass))
+		throw sol::error("Script doesn't have required methods.");
 
-	try
-	{
-		std::ifstream scriptFile(path);
-		sourceCode = {std::istreambuf_iterator<char>(scriptFile), std::istreambuf_iterator<char>()};
-	}
-	catch (...)
-	{
-		return false;
-	}
-
-	m_path = path;
-	loadScript(sourceCode);
-
-	return true;
-}
-
-void ScriptInstantiator::loadScript(std::string_view sourceCode)
-{
-	m_instancer = m_lua.load(sourceCode);
-
-	if (!m_instancer.valid())
-	{
-		sol::error err = m_instancer;
-
-		SPDLOG_WARN("ScriptInstantiator: Loaded invalid script at {}. Error: {}", m_path, err.what());
-	}
+	m_scriptClass = scriptClass;
+	m_valid = true;
 }
 
 bool ScriptInstantiator::isValid() const
 {
-	return m_instancer.valid();
-}
-
-std::string_view ScriptInstantiator::getErrors() const
-{
-	if (!m_instancer.valid())
-	{
-		return static_cast<sol::error>(m_instancer).what();
-	}
-	else
-	{
-		return "No Errors.";
-	}
+	return m_valid;
 }
 
 std::string_view ScriptInstantiator::getPath() const
 {
 	return m_path;
+}
+
+bool ScriptInstantiator::scriptMeetsRequirements(sol::table scriptTable) const
+{
+	static const std::vector<std::string> requiredMethods = {
+		"new", "onUpdate", "onFixedUpdate", "onAttach", "onDetach"
+	};
+
+	for (const auto& method : requiredMethods)
+	{
+		if (scriptTable.get<sol::object>(method) == sol::nil) return false;
+	}
+
+	return true;
 }
 
 
