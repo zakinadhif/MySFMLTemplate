@@ -59,11 +59,11 @@ ScriptComponent::ScriptComponent(ScriptInstantiator* instantiator, Args&&... arg
 		return;
 	}
 
-	m_instancingResult = instantiator->instance(std::forward<Args&&...>(args)...);
+	m_instancingResult = instantiator->instance(std::forward<Args>(args)...);
 	
 	if (!m_instancingResult.valid())
 	{
-		SPDLOG_WARN("ScriptComponent: Script is invalid. Reason: {}", ((sol::error)m_instancingResult).what());
+		SPDLOG_WARN("ScriptComponent: Created instance is invalid. Reason: {}", ((sol::error)m_instancingResult).what());
 
 		emptyInitialize();
 		return;
