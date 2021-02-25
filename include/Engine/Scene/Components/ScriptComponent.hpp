@@ -7,6 +7,7 @@
 
 #include <functional>
 #include <string_view>
+#include <cassert>
 
 namespace zfge
 {
@@ -51,13 +52,7 @@ private:
 template<typename... Args>
 ScriptComponent::ScriptComponent(ScriptInstantiator* instantiator, Args&&... args)
 {
-	if (!instantiator->isValid())
-	{
-		SPDLOG_WARN("ScriptComponent: Script instantiator's resource is invalid. Try checking the script for any mistakes.");
-
-		emptyInitialize();
-		return;
-	}
+	assert(instantiator->isValid());
 
 	m_instancingResult = instantiator->instance(std::forward<Args>(args)...);
 	
