@@ -1,5 +1,3 @@
-local class = require("external/middleclass/middleclass.lua")
-
 -- local entity = ...
 local NameScript = class('NameScript')
 
@@ -8,19 +6,19 @@ function NameScript:initialize(name)
 end
 
 function NameScript:onAttach()
-	-- do something
+	print(self.name .. ": I'm attached!")
 end
 
 function NameScript:onDetach()
-	-- do something
+	print(self.name .. "I'm detached!")
 end
 
-function NameScript:onFixedUpdate()
-	-- do something
+function NameScript:onFixedUpdate(dt)
+	print(self.name .. ": I'm updated with deltatime of " .. dt)
 end
 
 function NameScript:onUpdate(dt)
-	print(self.name .. ": Called with deltatime of " .. dt)
+	print(self.name .. ": I'm updated with deltatime of " .. dt)
 end
 
 return NameScript
