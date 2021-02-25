@@ -14,6 +14,13 @@ namespace zfge
 
 class ScriptInstantiator;
 
+/* ScriptComponent
+ * @purpose
+ * 	Acts as a wrapper for script methods.
+ * @TODO
+ * 	Consider using exception instead of warnings when instantiation fails.
+ */
+
 class ScriptComponent
 {
 public:
