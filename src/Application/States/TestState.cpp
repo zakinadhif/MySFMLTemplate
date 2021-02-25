@@ -33,6 +33,10 @@ TestState::TestState(zfge::GameStateManager& gameStateManager)
 	transform.transform.setPosition(10,10);
 	transform.transform.setRotation(10);
 
+	zfge::ScriptInstantiator& myScript = scriptSystem.makeScriptInstantiator("assets/scripts/test2.lua");
+	
+	registry.emplace<zfge::ScriptComponent>(entity, &myScript, std::string("Jeff"));
+
 	sf::Transformable& entityTransform = registry.get<zfge::TransformComponent>(entity).transform;
 	entityTransform.setPosition(400, 400);
 	entityTransform.setScale(200,200);
