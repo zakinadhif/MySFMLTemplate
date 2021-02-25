@@ -31,7 +31,7 @@ public:
 	std::string_view getPath() const noexcept;
 
 	template<typename... Args>
-	[[nodiscard]] sol::table instance(Args&&... args);
+	[[nodiscard]] sol::protected_function_result instance(Args&&... args);
 
 private:
 	bool scriptMeetsRequirements(sol::table scriptTable) const;
@@ -46,9 +46,9 @@ private:
 };
 
 template<typename... Args>
-sol::table ScriptInstantiator::instance(Args&&... args)
+sol::protected_function_result ScriptInstantiator::instance(Args&&... args)
 {
-	return m_scriptClass["new"](std::forward<Args>(args)...);
+	return m_scriptClass["new"](m_scriptClass, std::forward<Args>(args)...);
 }
 
 }
