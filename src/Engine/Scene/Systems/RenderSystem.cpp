@@ -21,22 +21,22 @@ void RenderSystem::update(const entt::registry& registry, sf::RenderTarget& rend
 			if (registry.has<TransformComponent, SpriteComponent>(entity))
 			{
 				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
-				const sf::Texture* const texture = registry.get<const SpriteComponent>(entity).texture;
-				const sf::Transform& transform = registry.get<const TransformComponent>(entity).transform.getTransform();
+				const sf::Texture* const texture = registry.get<SpriteComponent>(entity).texture;
+				const sf::Transform& transform = registry.get<TransformComponent>(entity).transform.getTransform();
 
 				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, transform, texture, nullptr));
 			}
 			else if (registry.has<TransformComponent>(entity))
 			{
 				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
-				const sf::Transform& transform = registry.get<const TransformComponent>(entity).transform.getTransform();
+				const sf::Transform& transform = registry.get<TransformComponent>(entity).transform.getTransform();
 				
 				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, transform, nullptr, nullptr));
 			}
 			else if (registry.has<SpriteComponent>(entity))
 			{	
 				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
-				const sf::Texture* const texture = registry.get<const SpriteComponent>(entity).texture;
+				const sf::Texture* const texture = registry.get<SpriteComponent>(entity).texture;
 
 				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, sf::Transform(), texture, nullptr));
 			}
