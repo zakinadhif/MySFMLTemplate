@@ -3,6 +3,7 @@
 #include "Engine/Scene/Components/MeshComponent.hpp"
 #include "Engine/Scene/Components/SpriteComponent.hpp"
 #include "Engine/Scene/Components/TransformComponent.hpp"
+#include "Engine/Scene/Components/TextureComponent.hpp"
 
 #include <entt/entt.hpp>
 #include <SFML/Graphics.hpp>
@@ -10,40 +11,45 @@
 namespace zfge
 {
 
-void RenderSystem::update(const entt::registry& registry, sf::RenderTarget& renderTarget)
+void renderEntities(const entt::registry& registry, sf::RenderTarget& renderTarget)
 {
-	auto view = registry.view<const MeshComponent>();
-
-	for (auto entity : view)
+	// Render meshes
 	{
-		if (registry.any_of<TransformComponent, SpriteComponent>(entity))
+		auto view = registry.view<const MeshComponent, const TransformComponent>();
+
+		for (auto entity : view)
 		{
-			if (registry.all_of<TransformComponent, SpriteComponent>(entity))
-			{
-				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
-				const sf::Texture* const texture = registry.get<SpriteComponent>(entity).texture;
-				const sf::Transform& transform = registry.get<TransformComponent>(entity).transform.getTransform();
+			const auto* const mesh = view.get<const MeshComponent>(entity).mesh;
+			const auto transform = view.get<const TransformComponent>(entity).transform.getTransform();
 
-				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, transform, texture, nullptr));
-			}
-			else if (registry.all_of<TransformComponent>(entity))
+			if (registry.all_of<TextureComponent>(entity))
 			{
-				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
-				const sf::Transform& transform = registry.get<TransformComponent>(entity).transform.getTransform();
-				
-				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, transform, nullptr, nullptr));
-			}
-			else if (registry.all_of<SpriteComponent>(entity))
-			{	
-				const sf::VertexArray* const mesh = view.get<const MeshComponent>(entity).mesh;
-				const sf::Texture* const texture = registry.get<SpriteComponent>(entity).texture;
+				const auto* const texture = registry.get<TextureComponent>(entity).texture;
 
-				renderTarget.draw(*mesh, sf::RenderStates(sf::BlendAlpha, sf::Transform(), texture, nullptr));
+				renderTarget.draw(*mesh, {sf::BlendAlpha, transform, texture, nullptr});
+			}
+			else
+			{
+				renderTarget.draw(*mesh, {transform});
 			}
 		}
-		else 
+	}
+
+	// Render sprites
+	{
+		auto view = registry.view<const SpriteComponent, const TextureComponent, const TransformComponent>();
+
+		for (auto entity : view)
 		{
-			renderTarget.draw(*view.get<const MeshComponent>(entity).mesh);
+			const auto transform = view.get<const TransformComponent>(entity).transform.getTransform();
+			const auto textureRect = view.get<const SpriteComponent>(entity).textureRect;
+			const auto* const texture = view.get<const TextureComponent>(entity).texture;
+
+			sf::Sprite sprite;
+			sprite.setTexture(*texture);
+			sprite.setTextureRect(textureRect);
+
+			renderTarget.draw(sprite, transform);
 		}
 	}
 }
