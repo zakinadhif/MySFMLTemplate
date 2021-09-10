@@ -3,6 +3,7 @@
 #include "Engine/Commons/GameState.hpp"
 #include "Engine/Scripting/ScriptInstantiator.hpp"
 #include "Engine/Scene/Systems/ScriptSystem.hpp"
+#include "Engine/Scene/Systems/AnimationSystem.hpp"
 
 #include <entt/entity/registry.hpp>
 #include <entt/entity/entity.hpp>
@@ -24,13 +25,13 @@ public:
 	~TestState();
 
 private:
-	sf::RectangleShape rect = sf::RectangleShape({100, 100});
 	zfge::GameStateManager& gameStateManager;
-
-	sf::VertexArray rectangleMesh;
-	sf::VertexArray triangleMesh;
 
 	entt::registry registry;
 
 	zfge::ScriptSystem scriptSystem;
+
+	sf::Texture spriteTexture;
+	sf::Texture dinoTexture;
+	zfge::FrameSets frameSets;
 };

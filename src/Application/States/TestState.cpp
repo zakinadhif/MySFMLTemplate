@@ -1,45 +1,82 @@
 #include "Application/States/TestState.hpp"
 
+#include "Engine/Commons/FrameSet.hpp"
 #include "Engine/Commons/GameStateManager.hpp"
 #include "Engine/Scene/Components/Components.hpp"
+#include "Engine/Scene/Components/SpriteComponent.hpp"
+#include "Engine/Scene/Components/TransformComponent.hpp"
 #include "Engine/Scene/Systems/RenderSystem.hpp"
 #include "Engine/Scene/Components/ScriptComponent.hpp"
 #include "Engine/Scene/Systems/ScriptSystem.hpp"
+#include "Engine/Scene/Components/TextureComponent.hpp"
+#include "Engine/Scene/Entity.hpp"
+#include "Engine/Scene/Components/AnimationComponent.hpp"
 
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <iostream>
 #include <spdlog/spdlog.h>
+#include <stdexcept>
+
+namespace
+{
+
+void generateDinoAnimationFrames(zfge::FrameSets& frameSets)
+{
+	zfge::FrameSet& idleFrames = frameSets["dino_idle"];
+
+	const std::size_t idleFrameCount = 4;
+	const int xGap = 9;
+	const int dinoWidth = 15;
+
+	sf::IntRect firstFrame {{6,4}, {15,17}};
+
+	idleFrames.push_back(firstFrame);
+
+	for (std::size_t x = 1; x < idleFrameCount; ++x)
+	{
+		auto nextFrame = firstFrame;
+
+		nextFrame.left = (6 + (dinoWidth)) + (xGap * x) + (dinoWidth * (x-1));
+		
+		idleFrames.push_back(nextFrame);
+	}
+}
+
+}
 
 TestState::TestState(zfge::GameStateManager& gameStateManager)
 	: gameStateManager(gameStateManager)
 	, scriptSystem(registry, "")
 {
-	rectangleMesh.resize(4u);
-	rectangleMesh.setPrimitiveType(sf::Quads);
-	rectangleMesh.append({{0.f, 0.f}, sf::Color::Green});
-	rectangleMesh.append({{1.f, 0.f}, sf::Color::Green});
-	rectangleMesh.append({{1.f, 1.f}, sf::Color::Green});
-	rectangleMesh.append({{0.f, 1.f}, sf::Color::Green});
+	if (!spriteTexture.loadFromFile("assets/Sprite.png"))
+	{
+		throw std::runtime_error("Can't load assets/Sprite.png");
+	}
 
-	triangleMesh.resize(3u);
-	triangleMesh.setPrimitiveType(sf::Triangles);
-	triangleMesh.append({{0.5f, 0.0f}, sf::Color::Blue});
-	triangleMesh.append({{1.0f, 1.0f}, sf::Color::Blue});
-	triangleMesh.append({{0.0f, 1.0f}, sf::Color::Blue});
+	if (!dinoTexture.loadFromFile("assets/DinoSprites - doux.png"))
+	{
+		throw std::runtime_error("Can't load assets/DinoSprites - doux.png");
+	}
 
-	entt::entity entity = registry.create();
-	registry.emplace<zfge::MeshComponent>(entity, &rectangleMesh);
-	auto& transform = registry.emplace<zfge::TransformComponent>(entity);
-	transform.transform.setPosition(10,10);
-	transform.transform.setRotation(10);
+	generateDinoAnimationFrames(frameSets);
 
-	zfge::ScriptInstantiator& myScript = scriptSystem.makeScriptInstantiator("assets/scripts/test2.lua");
-	
-	registry.emplace<zfge::ScriptComponent>(entity, &myScript, std::string("Jeff"));
+	zfge::Entity dino(registry.create(), registry);
 
-	sf::Transformable& entityTransform = registry.get<zfge::TransformComponent>(entity).transform;
+	dino.addComponent<zfge::TextureComponent>(&dinoTexture);
+	dino.addComponent<zfge::SpriteComponent>(sf::IntRect(6, 4, 15, 17));
+	dino.addComponent<zfge::AnimationComponent>("dino_idle", 0, 4.f, 0.f);
+
+	sf::Transformable& dinoTransform = dino.addComponent<zfge::TransformComponent>().transform;
+	dinoTransform.setPosition(200,200);
+	dinoTransform.setScale(15, 15);
+
+	zfge::Entity myEntity(registry.create(), registry);
+
+	myEntity.addComponent<zfge::TextureComponent>(&spriteTexture);
+	myEntity.addComponent<zfge::SpriteComponent>(sf::IntRect(0, 0, 125, 311));
+
+	sf::Transformable& entityTransform = myEntity.addComponent<zfge::TransformComponent>().transform;
 	entityTransform.setPosition(400, 400);
-	entityTransform.setScale(200,200);
 }
 
 void TestState::handleEvent(sf::Event event)
@@ -52,12 +89,13 @@ void TestState::handleEvent(sf::Event event)
 
 void TestState::update(const sf::Time& elapsed)
 {
+	zfge::animateEntities(registry, frameSets);
 	scriptSystem.update(elapsed.asSeconds());
 }
 
-void TestState::draw(sf::RenderTarget& target) const 
+void TestState::draw(sf::RenderTarget& target) const
 {
-	zfge::RenderSystem::update(registry, target);
+	zfge::renderEntities(registry, target);
 }
 
 TestState::~TestState()
