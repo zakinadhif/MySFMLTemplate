@@ -5,9 +5,9 @@
 namespace zfge
 {
 
-struct SpriteComponent
+struct TextureComponent
 {
-	sf::IntRect textureRect;
+	const sf::Texture* texture;
 };
 
 }
