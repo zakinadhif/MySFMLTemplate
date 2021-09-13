@@ -14,7 +14,7 @@ find_package(Lua REQUIRED)
 set_target_properties(
 	"${PROJECT_NAME}"
 	PROPERTIES
-	CXX_STANDARD 17
+	CXX_STANDARD 20
 	)
 
 target_compile_definitions(
