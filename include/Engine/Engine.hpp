@@ -1,5 +1,7 @@
 #pragma once
 
+#include "imgui-SFML.h"
+
 #include <utility>
 
 namespace zfge

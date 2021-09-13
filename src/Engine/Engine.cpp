@@ -2,6 +2,8 @@
 
 #include "Engine/Game.hpp"
 
+#include <imgui-SFML.h>
+
 #include <cassert>
 
 namespace zfge
@@ -15,6 +17,8 @@ void Engine::routine()
 {
 	assert(game);
 
+	ImGui::SFML::Init(game->getWindow());
+
 	sf::RenderWindow& window = game->getWindow();
 
 	sf::Clock timer;
@@ -25,12 +29,18 @@ void Engine::routine()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
+			ImGui::SFML::ProcessEvent(event);
+
 			game->handleEvent(event);
 		}
 
+		ImGui::SFML::Update(window, elapsed);
+
 		game->update(elapsed);
-		
+
 		game->draw();
+
+		window.display();
 
 		elapsed = timer.restart();
 	}
@@ -38,6 +48,7 @@ void Engine::routine()
 
 Engine::~Engine()
 {
+	ImGui::SFML::Shutdown();
 	if (game) delete game;
 }
 
