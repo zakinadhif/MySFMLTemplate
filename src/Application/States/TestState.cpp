@@ -5,6 +5,7 @@
 #include "Engine/Scene/Components/Components.hpp"
 #include "Engine/Scene/Components/SpriteComponent.hpp"
 #include "Engine/Scene/Components/TransformComponent.hpp"
+#include "Engine/Scene/Systems/DebugSystem.hpp"
 #include "Engine/Scene/Systems/RenderSystem.hpp"
 #include "Engine/Scene/Components/ScriptComponent.hpp"
 #include "Engine/Scene/Systems/ScriptSystem.hpp"
@@ -13,8 +14,10 @@
 #include "Engine/Scene/Components/AnimationComponent.hpp"
 
 #include <SFML/Graphics/PrimitiveType.hpp>
-#include <iostream>
 #include <spdlog/spdlog.h>
+#include <imgui-SFML.h>
+
+#include <iostream>
 #include <stdexcept>
 
 namespace
@@ -90,12 +93,15 @@ void TestState::handleEvent(sf::Event event)
 void TestState::update(const sf::Time& elapsed)
 {
 	zfge::animateEntities(registry, frameSets);
+	zfge::displayComponentsInspector(registry);
 	scriptSystem.update(elapsed.asSeconds());
 }
 
 void TestState::draw(sf::RenderTarget& target) const
 {
 	zfge::renderEntities(registry, target);
+
+	ImGui::SFML::Render(target);
 }
 
 TestState::~TestState()
